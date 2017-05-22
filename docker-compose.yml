@@ -1,0 +1,45 @@
+version: '3'
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  web:
+    build: .
+    image: tween-pb
+    #command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - ~/Projects/precios_bajos:/var/www/app
+      - ~/.ssh:/home/deploy/.ssh
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    environment:
+      - RAILS_ENV=development
+    depends_on:
+      - db_pg
+      - db_mysql
+    networks:
+      - internal
+
+  db_pg:
+    image: tween-pb-postgres
+    ports:
+     - "9000:5432"
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    tty: true
+    stdin_open: true
+    networks:
+      - internal
+
+  db_mysql:
+    image: tween-pb-mysql
+    ports:
+     - "8083:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    networks:
+      - internal
