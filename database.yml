@@ -1,0 +1,60 @@
+default: &default
+  adapter: postgresql
+  encoding: utf-8
+  pool: 5
+
+development:
+  <<: *default
+  host: db_pg
+  database: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE'] %>
+  username: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_USERNAME'] %>
+  password: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_PASSWORD'] %>
+
+mysql_bk_development:
+  adapter: mysql2
+  encoding: utf8
+  database: pb14
+  username: root
+  password: ''
+  host: db_mysql
+  port: 3306
+
+mysql_bk_production:
+  adapter: mysql2
+  encoding: utf8
+  database: pb14
+  username: pbDBA
+  password: '.22tw11'
+  host: 192.168.10.44
+  port: 3306
+
+mysql_terminales:
+  adapter: mysql2
+  encoding: utf8
+  database: tw_gateway
+  username: DBA
+  password: '.22tw11'
+  host: 192.168.10.100
+  port: 3306
+  socket: '/tmp/mysql1.sock'
+
+# mysql -u DBA -p -h 192.168.10.100 --socket /tmp/mysql1.sock
+
+test:
+  <<: *default
+  database: precios_bajos_test
+  username: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_USERNAME'] %>
+  password: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_PASSWORD'] %>
+
+production:
+  <<: *default
+  host: 192.168.10.244
+  database: <%= ENV['PRECIOS_BAJOS_DATABASE_NAME']%>
+  username: <%= ENV['PRECIOS_BAJOS_DATABASE_USERNAME'] %>
+  password: <%= ENV['PRECIOS_BAJOS_DATABASE_PASSWORD'] %>
+
+develop:
+  <<: *default
+  database: app_precios_bajos
+  username: <%= ENV['DEVELOP_PRECIOS_BAJOS_DATABASE_USERNAME'] %>
+  password: <%= ENV['DEVELOP_PRECIOS_BAJOS_DATABASE_PASSWORD'] %>

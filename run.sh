@@ -1,63 +1,56 @@
 #!/bin/bash
 set -e
 
-# if [ ! -d /usr/local/logs ]; then
-#   mkdir -p /usr/local/logs
-# fi
-# cd /usr/local/logs
-
-# LOG_FILE=docker.log
-# if [ ! -f $LOG_FILE ]; then
-#   touch $LOG_FILE
-# fi
-
-# exec 3>&1 1>>${LOG_FILE} 2>&1
-
+echo ""
 echo "Checking Postgres Availability..."
 
-# sudo -u postgres -H sh -c "/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf"
-
-#cmd="$@"
-
 until psql -h "db_pg" -U "postgres" -c '\q'; do
-  echo "Postgres is unavailable - sleeping"
+  echo "Postgres is unavailable, awaiting for availability"
   sleep 1
 done
 
-echo "Postgres is up - executing command"
+echo "Postgres is up, executing command"
+
+if ! psql -h "db_pg" -U "postgres" -c '\du' | grep 'pb'; do
+  echo "Creating Postgres User..."
+  psql -h "db_pg" -U "postgres" -c "CREATE USER pb WITH PASSWORD '123'; ALTER USER your_user CREATEDB;"
+fi
+
+redis-server /usr/local/etc/redis.conf
 
 echo "Waiting for app setup to finish..."
 
-#cp -fR /usr/lib/standalone /var/www/app/
+cp -fR /home/deploy/src/database.yml /home/deploy/Projects/precios_bajos/config/database.yml
+cp -fR /home/deploy/src/application.yml /home/deploy/Projects/precios_bajos/config/application.yml
+cp -fR /usr/lib/standalone /home/deploy/
 
-echo "Add SSH known hosts"
+echo "Adding SSH known hosts..."
 echo "[stash.tween.com.ar]:7999,[64.76.23.187]:7999 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6IViVf0lURpBgIe4jA4rFWouHfJQjLy01H9u3l/x89D6gF0ad/RcpwBWTWmnQpGbvUkyuybmdjj3G1nt2ylF3WjaibhBIWKMIq7U3riDn+8dxPYvWS3OR6192XV7Ah+4iwHIFUHgQk9yS/VKfH8tO/oSvzjVKImgkXOEgUlXhVf+VxhJhigk2KzyRo+L1lpEZifI3FHEzvmAw83mfUuNxS3LUSMD6GioOaCAuOtHPEynVveXDeNRl7d6Q3NF/IQw6bY/lqZ+6ZUN7xQhM1dCSvn89j55Mme12sgTQH1vK2Tg53Die3e9w/GS9AdTRnT6cgiktVH9IcFbLNVVQ4CQf" > /home/deploy/.ssh/known_hosts
-ssh-keyscan -t rsa bitbucket.org >> /home/deploy/.ssh/known_hosts
 ssh-keyscan -t rsa github.com >> /home/deploy/.ssh/known_hosts
+ssh-keyscan -t rsa bitbucket.org >> /home/deploy/.ssh/known_hosts
 
-cd /var/www/app
+cd /home/deploy/Projects/precios_bajos
 
-echo "Create Gemset"
+echo "Creating Gemset..."
 cp .ruby-version.sample .ruby-version
 cp .ruby-gemset.sample .ruby-gemset
 source ~/.rvm/scripts/rvm
-# rvm --force gemset delete global
+rvm --force gemset delete global
 rvm gemset create precios_bajos
 rvm gemset use precios_bajos
 
-echo "Install Bundler"
+echo "Installing Bundler..."
 gem install bundler --no-rdoc --no-ri -v="1.6.2"
+gem install rubygems-bundler --no-rdoc --no-ri -v="1.4.4"
+gem install capistrano -v="2.15.4" --no-rdoc --no-ri
 
-#bundle check
+echo "Installing Gems..."
+bundle check || bundle install --quiet
 
-# gem install spree -v '2.3.13'
-# gem install spree_frontend -v '2.3.13'
-# gem install spree_backend -v '2.3.13'
-# gem install shopping_mall -v '0.0.4'
+mkdir -p ./tmp/pids
+touch ./tmp/pids/sidekiq.pid
 
-#bundle install --quiet
-
-# bundle exec rails s -p 3000 -b '0.0.0.0'
+foreman start
 
 echo "Running App..."
 

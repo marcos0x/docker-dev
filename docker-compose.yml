@@ -8,16 +8,15 @@ services:
   web:
     build: .
     image: tween-pb
-    #command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
-      - ~/Projects/precios_bajos:/var/www/app
+      - ~/Projects/precios_bajos:/home/deploy/Projects/precios_bajos
       - ~/.ssh:/home/deploy/.ssh
     ports:
       - "3000:3000"
     tty: true
     stdin_open: true
     environment:
-      - RAILS_ENV=development
+      - RAILS_ENV=docker
     depends_on:
       - db_pg
       - db_mysql
