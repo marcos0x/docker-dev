@@ -11,12 +11,13 @@ services:
     volumes:
       - ~/Projects/precios_bajos:/home/deploy/Projects/precios_bajos
       - ~/.ssh:/home/deploy/.ssh
+      - ./data/redis:/var/lib/redis
     ports:
       - "3000:3000"
     tty: true
     stdin_open: true
     environment:
-      - RAILS_ENV=docker
+      - RAILS_ENV=development
     depends_on:
       - db_pg
       - db_mysql

@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     python-software-properties \
     software-properties-common \
+    net-tools \
+    telnet \
     openssh-client \
     openssh-server \
     libpq-dev \
@@ -51,20 +53,6 @@ RUN mkdir -p /usr/lib/standalone
 WORKDIR /usr/lib/standalone
 RUN wget -qO- -O tmp.zip https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.5.2.zip && unzip tmp.zip && rm tmp.zip
 
-COPY elasticsearch.yml /usr/lib/standalone/elasticsearch-1.5.2/config/
-COPY redis.conf /usr/local/etc/redis.conf
-COPY database.yml /home/deploy/src/database.yml
-COPY application.yml /home/deploy/src/application.yml
-COPY run.sh /usr/local/bin
-
-RUN chmod +x /usr/local/bin/run.sh
-
-VOLUME  ["/home/deploy/.ssh","/home/deploy/Projects/precios_bajos"]
-
-EXPOSE 3000
-
-WORKDIR  /home/deploy/Projects/precios_bajos
-
 USER deploy
 
 ENV RUBY_VERSION 2.1.2
@@ -80,6 +68,31 @@ RUN /bin/bash -l -c 'rvm requirements'
 RUN /bin/bash -l -c 'rvm install $RUBY_VERSION'
 RUN /bin/bash -l -c 'rvm use $RUBY_VERSION --default'
 RUN /bin/bash -l -c 'rvm rubygems $RUBYGEMS_VERSION --force'
+
+USER root
+
+VOLUME  ["/home/deploy/.ssh","/home/deploy/Projects/precios_bajos"]
+
+EXPOSE 3000
+
+RUN echo '127.0.0.1  www.pb.com.ar' >> /etc/hosts
+RUN echo '127.0.0.1  public.tiendanevada.com.ar' >> /etc/hosts
+RUN echo '127.0.0.1  docker.pb.com.ar' >> /etc/hosts
+RUN echo '130.100.110.33  dsa-webservices' >> /etc/hosts
+RUN echo '130.100.69.90  sa-webservices' >> /etc/hosts
+
+COPY elasticsearch.yml /home/deploy/src/elasticsearch.yml
+COPY elasticsearch.sh /home/deploy/src/elasticsearch.sh
+COPY redis.conf /home/deploy/src/redis.conf
+COPY database.yml /home/deploy/src/database.yml
+COPY application.yml /home/deploy/src/application.yml
+
+COPY run.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/run.sh
+
+USER deploy
+
+WORKDIR  /home/deploy/Projects/precios_bajos
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
 
