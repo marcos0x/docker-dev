@@ -77,7 +77,7 @@ EXPOSE 3000
 
 RUN echo '127.0.0.1  www.pb.com.ar' >> /etc/hosts
 RUN echo '127.0.0.1  public.tiendanevada.com.ar' >> /etc/hosts
-RUN echo '127.0.0.1  docker.pb.com.ar' >> /etc/hosts
+RUN echo '127.0.0.1  docker-deploy.pb.com.ar' >> /etc/hosts
 RUN echo '130.100.110.33  dsa-webservices' >> /etc/hosts
 RUN echo '130.100.69.90  sa-webservices' >> /etc/hosts
 
@@ -86,6 +86,7 @@ COPY elasticsearch.sh /home/deploy/src/elasticsearch.sh
 COPY redis.conf /home/deploy/src/redis.conf
 COPY database.yml /home/deploy/src/database.yml
 COPY application.yml /home/deploy/src/application.yml
+COPY first_store.rake /home/deploy/src/first_store.rake
 
 COPY run.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/run.sh

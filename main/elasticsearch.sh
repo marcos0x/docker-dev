@@ -12,7 +12,7 @@
 ES_HOME=/home/deploy/Projects/precios_bajos/standalone/elasticsearch-1.5.2
 ES_MIN_MEM=256m
 ES_MAX_MEM=2g
-DAEMON=$ES_HOME/bin/elasticsearch
+DAEMON="$ES_HOME/bin/elasticsearch"
 NAME=elasticsearch
 DESC=elasticsearch
 PID_FILE=/var/run/$NAME.pid
@@ -23,7 +23,7 @@ CONFIG_FILE=$ES_HOME/config/elasticsearch.yml
 DAEMON_OPTS="-p $PID_FILE -Des.config=$CONFIG_FILE -Des.path.home=$ES_HOME -Des.path.logs=$LOG_DIR -Des.path.data=$DATA_DIR -Des.path.work=$WORK_DIR"
 
 
-test -x $DAEMON || exit 0
+#test -x $DAEMON || exit 0
 
 set -e
 
@@ -31,7 +31,7 @@ case "$1" in
   start)
     echo -n "Starting $DESC: "
     mkdir -p $LOG_DIR $DATA_DIR $WORK_DIR
-    if start-stop-daemon --start --pidfile $PID_FILE --startas $DAEMON -- $DAEMON_OPTS
+    if sudo start-stop-daemon --background --start --pidfile $PID_FILE --startas $DAEMON -- $DAEMON_OPTS
     then
         echo "started."
     else
@@ -40,7 +40,7 @@ case "$1" in
     ;;
   stop)
     echo -n "Stopping $DESC: "
-    if start-stop-daemon --stop --pidfile $PID_FILE
+    if sudo start-stop-daemon --stop --pidfile $PID_FILE
     then
         echo "stopped."
     else
