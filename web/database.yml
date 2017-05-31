@@ -5,7 +5,7 @@ default: &default
 
 development:
   <<: *default
-  host: db_pg
+  host: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_HOST'] %>
   database: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE'] %>
   username: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_USERNAME'] %>
   password: <%= ENV['DEVELOPMENT_PRECIOS_BAJOS_DATABASE_PASSWORD'] %>

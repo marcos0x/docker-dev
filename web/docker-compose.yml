@@ -8,20 +8,21 @@ services:
   web:
     build: .
     image: tween-pb
-    command: echo "Starting Server..." && foreman start
+    container_name: tween-pb-web
     volumes:
       - ~/Projects/precios_bajos:/home/deploy/Projects/precios_bajos
       - ~/.ssh:/home/deploy/.ssh
       - ./data/redis:/var/lib/redis
     ports:
       - "8080"
-      - "3000:3000"
-      - "9200:9200"
+      - "3001:3000"
+      - "9201:9200"
     tty: true
     stdin_open: true
     environment:
       - RAILS_ENV=development
       - VIRTUAL_HOST=docker-deploy.pb.com.ar
+      - DEVELOPMENT_ENV=docker
     depends_on:
       - db_pg
       - db_mysql
@@ -30,6 +31,7 @@ services:
 
   db_pg:
     image: tween-pb-postgres
+    container_name: tween-pb-postgres
     ports:
      - "9000:5432"
     volumes:
@@ -41,6 +43,7 @@ services:
 
   db_mysql:
     image: tween-pb-mysql
+    container_name: tween-pb-mysql
     ports:
      - "8083:3306"
     volumes:

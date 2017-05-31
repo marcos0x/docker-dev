@@ -85,7 +85,7 @@ COPY elasticsearch.yml /home/deploy/src/elasticsearch.yml
 COPY elasticsearch.sh /home/deploy/src/elasticsearch.sh
 COPY redis.conf /home/deploy/src/redis.conf
 COPY database.yml /home/deploy/src/database.yml
-COPY application.yml /home/deploy/src/application.yml
+COPY docker.yml /home/deploy/src/docker.yml
 COPY first_store.rake /home/deploy/src/first_store.rake
 
 COPY run.sh /usr/local/bin
@@ -97,4 +97,4 @@ WORKDIR  /home/deploy/Projects/precios_bajos
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
 
-CMD ["/bin/bash"]
+CMD ["echo 'Starting Server...'","foreman start"]
