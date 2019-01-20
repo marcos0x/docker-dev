@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 HOME=/home/deploy
 PROJECT=$HOME/Projects/precios_bajos

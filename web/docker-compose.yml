@@ -14,14 +14,13 @@ services:
       - ~/.ssh:/home/deploy/.ssh
       - ./data/redis:/var/lib/redis
     ports:
-      - "8080"
       - "3001:3000"
       - "9201:9200"
+    shm_size: 2GB
     tty: true
     stdin_open: true
     environment:
       - RAILS_ENV=development
-      - VIRTUAL_HOST=docker-deploy.pb.com.ar
       - DEVELOPMENT_ENV=docker
     depends_on:
       - db_pg
@@ -34,6 +33,7 @@ services:
     container_name: tween-pb-postgres
     ports:
      - "9000:5432"
+    shm_size: 500MB
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     tty: true
@@ -46,6 +46,7 @@ services:
     container_name: tween-pb-mysql
     ports:
      - "8083:3306"
+    shm_size: 500MB
     volumes:
       - ./data/mysql:/var/lib/mysql
     networks:

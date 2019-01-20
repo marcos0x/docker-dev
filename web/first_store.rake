@@ -20,7 +20,10 @@ namespace :first_store do
 
       st = Store.new(store_attrs)
       st.save
+
+      g = Spree::Gateway::Fiji.first
+      g.preferences = {:nroComercio=>'630000195', :idTerminal=>'3', :server=>"test", :test_mode=>true}
+      g.save
     end
   end
 end
-
