@@ -9,7 +9,7 @@
 # Description:       Starts elasticsearch using start-stop-daemon
 ### END INIT INFO
 
-ES_HOME=/home/deploy/Projects/precios_bajos/standalone/elasticsearch-1.5.2
+ES_HOME=/home/develop/Projects/standalone/elasticsearch-1.5.2
 ES_MIN_MEM=256m
 ES_MAX_MEM=2g
 DAEMON="$ES_HOME/bin/elasticsearch"

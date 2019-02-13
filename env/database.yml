@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: utf-8
+  pool: 5
+
+development:
+  <<: *default
+  host: <%= ENV['DEVELOPMENT_DATABASE_HOST'] %>
+  database: <%= ENV['DEVELOPMENT_DATABASE'] %>
+  username: <%= ENV['DEVELOPMENT_DATABASE_USERNAME'] %>
+  password: <%= ENV['DEVELOPMENT_DATABASE_PASSWORD'] %>
+
+mysql_bk_development:
+  adapter: mysql2
+  encoding: utf8
+  database: development
+  username: root
+  password: ''
+  host: db_mysql
+  port: 3306

@@ -5,13 +5,16 @@ networks:
     driver: bridge
 
 services:
-  web:
+  env:
     build: .
-    image: tween-pb
-    container_name: tween-pb-web
+    image: devix
+    container_name: devix-env
     volumes:
-      - ~/Projects/precios_bajos:/home/deploy/Projects/precios_bajos
-      - ~/.ssh:/home/deploy/.ssh
+      - ~/Projects:/home/develop/Projects
+      - ~/.ssh:/home/develop/.ssh
+      - ~/.oh-my-zsh:/home/develop/.oh-my-zsh
+      - ~/.oh-my-git:/home/develop/.oh-my-git
+      - ~/.antigen:/home/develop/.antigen
       - ./data/redis:/var/lib/redis
     ports:
       - "3001:3000"
@@ -20,6 +23,7 @@ services:
     tty: true
     stdin_open: true
     environment:
+      - NODE_ENV=development
       - RAILS_ENV=development
       - DEVELOPMENT_ENV=docker
     depends_on:
@@ -29,8 +33,8 @@ services:
       - internal
 
   db_pg:
-    image: tween-pb-postgres
-    container_name: tween-pb-postgres
+    image: devix-postgres
+    container_name: devix-postgres
     ports:
      - "9000:5432"
     shm_size: 500MB
@@ -42,8 +46,8 @@ services:
       - internal
 
   db_mysql:
-    image: tween-pb-mysql
-    container_name: tween-pb-mysql
+    image: devix-mysql
+    container_name: devix-mysql
     ports:
      - "8083:3306"
     shm_size: 500MB

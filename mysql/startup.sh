@@ -2,7 +2,11 @@
 
 if [ ! -f /var/lib/mysql/ibdata1 ]; then
 
-	mysql_install_db
+	mkdir -p /var/run/mysqld
+	chown mysql:mysql /var/run/mysqld
+
+	# mysql_install_db
+	mysqld --initialize --datadir=/var/lib/mysql
 
 	/usr/bin/mysqld_safe &
 	sleep 10s
